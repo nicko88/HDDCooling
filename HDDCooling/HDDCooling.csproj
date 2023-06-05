@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Copyright>nicko88</Copyright>
+    <Description>Small app to cool the hard disks in my home linux file server</Description>
+    <Authors>nicko88</Authors>
+    <Company>nicko88</Company>
+    <Product>HDDCooling</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CliWrap" Version="3.6.3" />
+  </ItemGroup>
+
+</Project>
