@@ -1,0 +1,8 @@
+{
+  "HDDPath": "/dev/disk/by-id/ata-WDC_WUH721414ALE6L4_9RH0AANL",
+  "PWMPath": "/sys/class/hwmon/hwmon6/pwm1",
+  "MinSpeed": 40,
+  "MaxSpeed": 80,
+  "TargetTemp": 40,
+  "CriticalTemp": 45
+}

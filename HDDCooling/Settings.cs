@@ -5,8 +5,8 @@ namespace HDDCooling
 {
     internal class Settings
     {
-        public string PWMPath { get; set; }
         public string HDDPath { get; set; }
+        public string PWMPath { get; set; }
         public int MinSpeed { get; set; }
         public int MaxSpeed { get; set; }
         public int TargetTemp { get; set; }
