@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace HDDCooling
 {
@@ -14,15 +13,11 @@ namespace HDDCooling
 
         public static Settings? LoadSettings()
         {
-            Settings? settings = new Settings();
+            Settings? settings;
             try
             {
-                JsonSerializerOptions options = new JsonSerializerOptions();
-                options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
-                options.WriteIndented = true;
-
-                string jsonSettings = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "HDDCoolingSettings.json"));
-                settings = JsonSerializer.Deserialize<Settings>(jsonSettings, options);
+                string settingsJSON = File.ReadAllText(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "HDDCoolingSettings.json"));
+                settings = JsonSerializer.Deserialize<Settings>(settingsJSON);
             }
             catch(Exception ex)
             {
