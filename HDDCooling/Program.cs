@@ -7,45 +7,61 @@ namespace HDDCooling
     {
         static async Task Main(string[] args)
         {
-            Settings? settings = Settings.LoadSettings();
+            Log.LogMsg("PROGRAM STARTUP");
 
-            if (settings is not null)
+            try
             {
-                PWM pwm = new PWM(settings.PWMPath, settings.MinSpeed, settings.MaxSpeed);
+                Settings? settings = Settings.LoadSettings();
 
-                PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
-                while (await timer.WaitForNextTickAsync())
+                if (settings is not null)
                 {
-                    int? temp = await GetTemp(settings.HDDPath);
+                    PWM pwm = new PWM(settings);
 
-                    if (temp is not null)
+                    PeriodicTimer timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+                    while (await timer.WaitForNextTickAsync())
                     {
-                        if (temp > settings.TargetTemp)
-                        {
-                            pwm.AdjustSpeed(5);
-                        }
-                        else if (temp < settings.TargetTemp)
-                        {
-                            pwm.AdjustSpeed(-5);
-                        }
+                        int? temp = await GetTemp(settings.HDDPath);
 
-                        if (temp > settings.CriticalTemp)
+                        if (temp is not null)
                         {
-                            pwm.Speed = 100;
+                            if (temp > settings.TargetTemp)
+                            {
+                                pwm.AdjustSpeed(5);
+                            }
+                            else if (temp < settings.TargetTemp)
+                            {
+                                pwm.AdjustSpeed(-5);
+                            }
+
+                            if (temp > settings.CriticalTemp)
+                            {
+                                pwm.Speed = 100;
+                            }
+
+                            Log.LogMsg($"Speed: {pwm.Speed}");
                         }
-                    }
-                    else
-                    {
-                        pwm.Speed = settings.MaxSpeed;
-                        Console.Out.WriteLine("Could not get HDD temp...");
-                        Console.Out.WriteLine("Setting fan to MaxSpeed...");
+                        else
+                        {
+                            pwm.Speed = settings.MaxSpeedAway;
+                            Console.Out.WriteLine("Could not get HDD temp...");
+                            Log.LogMsg("Could not get HDD temp...");
+                            Console.Out.WriteLine("Setting fan to MaxSpeed...");
+                            Log.LogMsg("Setting fan to MaxSpeed...");
+                        }
                     }
                 }
+                else
+                {
+                    Console.WriteLine("Could not load settings...");
+                    Log.LogMsg("Could not load settings...");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("Could not load settings...");
+                Log.LogMsg(ex.Message);
             }
+
+            Log.LogMsg("PROGRAM EXITING...");
         }
 
         private static async Task<int?> GetTemp(string HDDPath)

@@ -2,7 +2,12 @@
   "HDDPath": "/dev/disk/by-id/ata-WDC_WUH721414ALE6L4_9RH0AANL",
   "PWMPath": "/sys/class/hwmon/hwmon6/pwm1",
   "MinSpeed": 40,
-  "MaxSpeed": 80,
+  "MaxSpeedHome": 45,
+  "MaxSpeedAway": 80,
+  "WeekdayAwayHourStart": 7,
+  "WeekdayAwayHourEnd": 17,
+  "WeekendAwayHourStart": 3,
+  "WeekendAwayHourEnd": 10,
   "TargetTemp": 40,
   "CriticalTemp": 45
 }

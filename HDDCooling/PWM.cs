@@ -2,13 +2,12 @@
 {
     internal class PWM
     {
-        private readonly string _pwmFile;
-        private readonly int _minSpeed;
-        private readonly int _maxSpeed;
+        private readonly Settings _settings;
         private int _speed;
 
         public int Speed
         {
+            get { return _speed; }
             set
             {
                 _speed = value;
@@ -22,29 +21,51 @@
             }
         }
 
-        public PWM(string pwmFile, int minSpeed, int maxSpeed)
+        private int MaxSpeed
         {
-            _pwmFile = pwmFile;
-            _minSpeed = minSpeed;
-            _maxSpeed = maxSpeed;
+            get
+            {
+                DateTime now = DateTime.Now;
 
-            Speed = minSpeed;
+                //weekend
+                if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    //between 3am and 10am
+                    if (_settings.WeekendAwayHourStart <= now.Hour && now.Hour < _settings.WeekendAwayHourEnd)
+                    {
+                        return _settings.MaxSpeedAway;
+                    }
+                    else
+                    {
+                        return _settings.MaxSpeedHome;
+                    }
+                }
+                //weekday
+                else
+                {
+                    //between 2am and 5pm
+                    if (_settings.WeekdayAwayHourStart <= now.Hour && now.Hour < _settings.WeekdayAwayHourEnd)
+                    {
+                        return _settings.MaxSpeedAway;
+                    }
+                    else
+                    {
+                        return _settings.MaxSpeedHome;
+                    }
+                }
+            }
+        }
+
+        public PWM(Settings settings)
+        {
+            _settings = settings;
+
+            Speed = settings.MinSpeed;
         }
 
         public void AdjustSpeed(int adjustBy)
         {
-            int newSpeed = _speed + adjustBy;
-
-            if (newSpeed > _maxSpeed)
-            {
-                newSpeed = _maxSpeed;
-            }
-            else if (newSpeed < _minSpeed)
-            {
-                newSpeed = _minSpeed;
-            }
-
-            Speed = newSpeed;
+            Speed = Math.Max(_settings.MinSpeed, Math.Min(MaxSpeed, _speed + adjustBy));
         }
 
         private void SetPWMSpeed()
@@ -52,12 +73,14 @@
             double pwmSpeed = Math.Round(_speed / 100d * 255d);
             try
             {
-                File.WriteAllText(_pwmFile, pwmSpeed.ToString());
+                File.WriteAllText(_settings.PWMPath, pwmSpeed.ToString());
             }
             catch(Exception ex)
             {
                 Console.WriteLine("Failed to set PWM...");
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine($"{ex.Message}");
+                Log.LogMsg("Failed to set PWM...");
+                Log.LogMsg(ex.Message);
             }
         }
     }
