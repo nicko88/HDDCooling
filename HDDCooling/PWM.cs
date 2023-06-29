@@ -30,7 +30,6 @@
                 //weekend
                 if (now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday)
                 {
-                    //between 3am and 10am
                     if (_settings.WeekendAwayHourStart <= now.Hour && now.Hour < _settings.WeekendAwayHourEnd)
                     {
                         return _settings.MaxSpeedAway;
@@ -43,7 +42,6 @@
                 //weekday
                 else
                 {
-                    //between 2am and 5pm
                     if (_settings.WeekdayAwayHourStart <= now.Hour && now.Hour < _settings.WeekdayAwayHourEnd)
                     {
                         return _settings.MaxSpeedAway;
